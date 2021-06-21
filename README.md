@@ -20,10 +20,10 @@ Dummy word game is a project that includes game which rules are simple - player 
 
 ## Architecture
 Project consists of 3 modules
-\n
-  1.App module - Main application module that is responsible for displaying UI and main game logic. 
-  2.Bot module - Bot application that is responsible for generating bot's responses and responding. 
-  3.Common module - Module that has commonn logic between bot and app modules
+
+<br> 1.App module - Main application module that is responsible for displaying UI and main game logic. 
+<br>   2.Bot module - Bot application that is responsible for generating bot's responses and responding. 
+<br>  3.Common module - Module that has commonn logic between bot and app modules
   
 
 Dependencies between modules look like this  
