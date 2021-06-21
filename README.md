@@ -37,9 +37,21 @@ Each app module has  "common" dependency.
 
 ## Communication
 
-Communnication between two app modules is done with Bound services model, which can be alternatively described as client-server communication in this case client is can be interpreteed as App module and server - as Bot module. 
+Communnication between two app modules is done with Bound services model, which can be alternatively described as client-server communication in this case client  can be represented as App module and server - as Bot module. 
 
 Use case diagram for communication is depicted in following picture
 
 ![image](https://user-images.githubusercontent.com/25895125/122736777-6d410280-d291-11eb-8841-53adea7d0529.png)
+
+App module will  check if there is bot application installed on device and then tries to bind to its service. Service in bot application will start automatically after client  makes call bindService method. We will not start service explicitly as we want it to stop after client will unbind from service. 
+
+As communication should be between two app processes we will use Messenger interface to do so. We will have Messenger object in both application and bot services. Messengers have Handlers in which we will respond to onMessageReceived callBack and read data in Message object in following manner 
+```kotlin
+ private val receiveMessageHandler = Handler.Callback {
+        when (it.what) {
+            MSG_WORD_SEND_WHAT -> viewModel.onWordReceivedIntent(it.data.getString(MSG_WORD_SENT_KEY)!!)
+        }
+        true
+    }
+```
 
