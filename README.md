@@ -10,13 +10,17 @@
      <li><a href="#communication">Communication</a></li>
      <li><a href="#moduleApp">Module App</a></li>
     <li><a href="#moduleBot">Module Bot</a></li>
+    <li><a href="#moduleCommon">Module Common</a></li>
+    <li><a href="#tests">Tests</a></li>
      </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
 ## General description
 
-Dummy word game is a project that includes game which rules are simple - player enters the word to start the game, theres bot who responds with entered word and adds new unique word , now its player's turn again. game continues until any rule will be broken. Project's purpose is to demonnstrate how to handle different arcchitectural challenges onnly and it is not for commercial or any other use  
+Dummy word game is a project that includes game which rules are simple - player enters the word to start the game, theres bot who responds with entered word and adds new unique word , now its player's turn again. game continues until any rule will be broken. Project's purpose is to demonnstrate how to handle different arcchitectural challenges onnly and it is not for commercial or any other use.
+
+(actually do whatever you want with project) 
 
 ## Architecture
 Project consists of 3 modules
@@ -102,7 +106,7 @@ Than we send messages from BotService with that messengerClient
 ````
 I am using Bundle() to share and read data between app and bot applications. 
 
-##Module App
+## Module App
 
 This module represents main app module. Application is built with MVVM architecture , as a dependency injection tool i m using koin for simple and swifter implementation. 
 ViewModel is responsible for delegating viewStates depending on business logic.
@@ -174,6 +178,64 @@ Project 100% uses Jetpack's viewBinding to work with the views.
 
 I use DiffUtils class to update recycler view effectively
 
-Koin is used to demonstrate how we can make dependecy injection easily and effectively it only injects WordsValidator to ViewModel class
+Koin is used to demonstrate how we can make dependecy injection easily and effectively. it only injects WordsValidator to ViewModel class
 
- 
+
+## Module Bot
+
+Application com.adjarabet.bot consists solely of class DummyGameBot which extendss Android Service class. Application does not have launcher or activity so android studio will show error while launching app
+![image](https://user-images.githubusercontent.com/25895125/122750923-30303c80-d2a0-11eb-87cf-b48191322486.png)
+
+It is 100 % ok, as Applicatioin's purpose is to serve Client app and does not need any UI
+Most part of this application is depicted in <a href="#communication">Communication</a> part. it receives and sends data to client. 
+
+Application's other responsibility is to generate random word which will be sent to user later
+
+I am using org.apache.commons.RandomTextUtils to generate random string because.... you know... why not? 
+
+As game rules say that neither player can repeat words that was mentioned in game I use recursive function to generate unique word everytime client asks for it 
+
+```kotlin
+    private fun generateRandomWord(word: String?): String {
+        return if (losingProbabiltyRange.contains(Random.nextInt(PERCENT_MAX_VALUE))) {
+            BOT_LOSING_ERR_MESSAGE
+        } else {
+            val newWordList = word?.split(' ')
+            val randWord = RandomStringUtils.randomAlphabetic(Random.nextInt(RANDOM_WORD_MAX_LENGTH))
+            if (newWordList?.contains(randWord) == true ) {
+                generateRandomWord(word)
+            }
+            "$word $randWord"
+        }
+
+    }
+```
+Here i also let user win with given probability its value can be change in constant 
+```kotlin
+        const val BOT_LOSING_PROBABILITY_PERCENT = 3
+```
+I also have logic to delay response with 500 ms because communication lookss smoother that way ^^
+
+
+## Module Common
+
+This module has purpose to share things between app and bot module , for given moment I only share constants which are necessarry for communication for both parties
+
+```
+object UserBotCommonLogicConstants {
+    const val MSG_WORD_RECEIVED_WHAT = 31
+    const val MSG_WORD_RECEIVED_KEY = "MSG_WORD_RECEIVED_KEY"
+    const val MSG_WORD_SEND_WHAT = 3
+    const val MSG_WORD_SENT_KEY = "MSG_WORD_SENT_KEY"
+    const val BOT_LOSING_ERR_MESSAGE = "TOO_MUCH_FOR_ME"
+}
+```
+In perspective that module can contain validation or other logic that should be shared across apps. 
+
+## Tests 
+I have written simple unit tests with Junit framework for demonstration purposes only 
+tests ccan be found in following file src/androidTest/java/com/adjarabet/user/WordsValidatorTest.kt
+
+Happy coding !!! 
+
+<iframe src="https://giphy.com/embed/Od0QRnzwRBYmDU3eEO" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/primevideo-2020-borat-subsequent-moviefilm-Od0QRnzwRBYmDU3eEO">via GIPHY</a></p>
