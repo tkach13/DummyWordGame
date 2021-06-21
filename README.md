@@ -47,11 +47,133 @@ App module will  check if there is bot application installed on device and then 
 
 As communication should be between two app processes we will use Messenger interface to do so. We will have Messenger object in both application and bot services. Messengers have Handlers in which we will respond to onMessageReceived callBack and read data in Message object in following manner 
 ```kotlin
- private val receiveMessageHandler = Handler.Callback {
+ private val handlerCallback = Handler.Callback { msg ->
+        when (msg.what) {
+            MSG_WORD_RECEIVED_WHAT -> handleReceivedMessage(msg.data.getString(MSG_WORD_RECEIVED_KEY))
+            MSG_WORD_SEND_WHAT -> handleSendMessage(msg)
+        }
+        true
+    }
+```
+we will share than Ibinder from Messsenger object to client following way
+```kotlin
+ override fun onBind(intent: Intent?): IBinder? {
+        messengerServer = Messenger(IncomingMessageHandler(handlerCallback))
+        return messengerServer.binder
+    }
+```
+to have two way communication between server and client we should define second messenger object in our service class which will be sent from client in message.replyTo parameter
+
+Client code 
+```kotlin
+ try {
+                val msg = Message.obtain(null, MSG_WORD_SEND_WHAT, 0, 0).apply {
+                    replyTo = receiveMessenger
+                }
+                botService?.send(msg)
+```
+
+
+```kotlin
+private val receiveMessageHandler = Handler.Callback {
         when (it.what) {
             MSG_WORD_SEND_WHAT -> viewModel.onWordReceivedIntent(it.data.getString(MSG_WORD_SENT_KEY)!!)
         }
         true
     }
+    private val receiveMessenger = Messenger(MessageReceiverMessenger(receiveMessageHandler))
+ ```
+ 
+Server Code 
+```
+private fun handleSendMessage(message: Message) {
+        messengerClient = message.replyTo
+    }
+```
+Than we send messages from BotService with that messengerClient 
+
+```kotlin
+ messengerClient.send(Message.obtain(null, MSG_WORD_SEND_WHAT, 0, 0).apply {
+                data = Bundle().apply {
+                    putString(MSG_WORD_SENT_KEY, generateRandomWord(receivedWord))
+                }
+            })
+            
+````
+I am using Bundle() to share and read data between app and bot applications. 
+
+##Module App
+
+This module represents main app module. Application is built with MVVM architecture , as a dependency injection tool i m using koin for simple and swifter implementation. 
+ViewModel is responsible for delegating viewStates depending on business logic.
+
+Architecture is depicted in following picture
+![image](https://user-images.githubusercontent.com/25895125/122747283-f1988300-d29b-11eb-87f1-28c41e9087b6.png)
+
+<br>
+please note that 
+Activity is delegated to exchange data with service. as application use case was small i did not think it was necessary to create separate data layer.
+in production project data layer should be separate part of course. 
+
+View model is communicating with Activity with Jetpack's LiveData 
+on each viewState change i send new ViewState with only property that needs updating 
+for example if viewModel deciedes that user lost the game only lostGame property will be updated in following way 
+```kotlin
+            sendState(mainViewState.copy(gameLost = DisposableValue(validationResult)))
+``` 
+Data Class 's .copy makes sure that old state will not be lost 
+Disposable Value is Property wrapper class which has following behavior , once it is used it's value will be null, I do that to prevent redrawing states which weren't changed. 
+
+Assuming that bot has (almost :)))  always "Right answer" I only validate user input with Word Validator classs . 
+
+WordsValidator has main method doValidation which reeturns ValidationResult 
+Validation result is a Sealed class which can only be one from following 
+
+```kotlin
+data class ValidationResultOK(val word:String):ValidationResult()
+
+data class  ValidationResultLost(val lostReasons: LostReasons):ValidationResult()
+```
+if doValidation returns ValidationResultLost we have ability to determine what was wrong with user's input from lostReason property
+
+LostReason itself is a sealed class which is parent for all possible Losing reasons 
+
+```kotlin
+sealed class LostReasons()
+object LostReasonTwoWordsAdded:LostReasons()
+object LostReasonNoWordAdded:LostReasons()
+data class LostReasonWordRepeated(val repeatedWord:String):LostReasons()
+data class LostReasonIncorrectWord(val incorrectWord:Map<String,String>):LostReasons()
 ```
 
+As for visualization of game history I used heteroogenous recyclerView , it is achieved by returning different Int for bot and user's responsess in Adapters getItemViewType method
+
+```kotlin
+override fun getItemViewType(position: Int): Int {
+        return currentList[position].playerType.ordinal
+    }
+```
+Than in onCreateViewHolder i return different ViewHolders Both which are Children of BaseViewHolder abstract class
+
+```kotlin
+abstract class BaseViewHolder(binding: ViewBinding):RecyclerView.ViewHolder(binding.root) {
+   abstract fun bind(itemDataModel:GameHistoryItemDataModel)
+}
+```
+In each classsess implementation of bind method i do the binding of data and view. 
+```kotlin
+  inner class GameHistoryBotViewHolder(private val viewBinding: LayoutGameHistoryBotItemBinding)
+        : BaseViewHolder(viewBinding) {
+        override fun bind(itemDataModel: GameHistoryItemDataModel) {
+            viewBinding.tvInput.text = itemDataModel.currentWord
+            viewBinding.ivPlayerType.setImageDrawable(ContextCompat.getDrawable(viewBinding.root.context, R.drawable.ic_robot))
+        }
+    }
+```
+Project 100% uses Jetpack's viewBinding to work with the views.
+
+I use DiffUtils class to update recycler view effectively
+
+Koin is used to demonstrate how we can make dependecy injection easily and effectively it only injects WordsValidator to ViewModel class
+
+ 
