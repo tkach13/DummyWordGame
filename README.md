@@ -238,4 +238,4 @@ tests ccan be found in following file src/androidTest/java/com/adjarabet/user/Wo
 
 Happy coding !!! 
 
-<iframe src="https://giphy.com/embed/Od0QRnzwRBYmDU3eEO" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/primevideo-2020-borat-subsequent-moviefilm-Od0QRnzwRBYmDU3eEO">via GIPHY</a></p>
+https://media.giphy.com/media/Od0QRnzwRBYmDU3eEO/giphy.gif
