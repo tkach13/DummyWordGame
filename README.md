@@ -238,4 +238,5 @@ tests ccan be found in following file src/androidTest/java/com/adjarabet/user/Wo
 
 Happy coding !!! 
 
-https://media.giphy.com/media/Od0QRnzwRBYmDU3eEO/giphy.gif
+<img src = "https://media.giphy.com/media/Od0QRnzwRBYmDU3eEO/giphy.gif">
+
