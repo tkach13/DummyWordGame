@@ -119,16 +119,18 @@ please note that
 Activity is delegated to exchange data with the service. as the application use case was small I did not think it was necessary to create separate data layer.
 in production project data layer should be a separate part of course. 
 
-View model is communicating with Activity with Jetpack's LiveData 
-on each viewState change i send new ViewState with only property that needs updating 
+View model is communicating with Activity with Jetpack's LiveData
+<br>
+on each viewState change i send new ViewState with only property that needs updating.
 for example if viewModel deciedes that user lost the game only lostGame property will be updated in following way 
 ```kotlin
             sendState(mainViewState.copy(gameLost = DisposableValue(validationResult)))
 ``` 
-Data Class 's .copy makes sure that old state will not be lost 
-Disposable Value is Property wrapper class which has following behavior , once it is used it's value will be null, I do that to prevent redrawing states which weren't changed. 
+Data Class 's .copy makes sure that old state will not be lost.
+<br>
+Disposable Value is Property wrapper class which has following behavior:  once it is used it's value will be null, I do that to prevent redrawing states which weren't changed. 
 
-Assuming that bot has (almost :)))  always "Right answer" I only validate user input with Word Validator classs . 
+Assuming that bot has (almost :)))  always "Right answer" I only validate User input (not bot's) with Word Validator classs . 
 
 WordsValidator has a main method doValidation which returns ValidationResult 
 Validation result is a Sealed class which can only be one from following 
