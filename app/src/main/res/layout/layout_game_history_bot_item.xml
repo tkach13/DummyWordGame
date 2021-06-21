@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/clRoot"
+    android:layout_height="wrap_content"
+    tools:background="@color/black">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/startGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/endGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivPlayerType"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textColor="@color/purple_500"
+        android:textSize="@dimen/player_type_text_size"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintStart_toStartOf="@id/startGuide"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.1388"
+        tools:src="@drawable/ic_robot" />
+
+    <Space
+        android:id="@+id/marginToTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ivPlayerType"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.027" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvInput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/GameHistoryItemTextStyle"
+        app:layout_constraintBottom_toBottomOf="@id/ivPlayerType"
+        app:layout_constraintStart_toEndOf="@id/marginToTv"
+        app:layout_constraintEnd_toEndOf="@id/endGuide"
+        app:layout_constraintTop_toTopOf="@id/ivPlayerType"
+        tools:text="Test" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

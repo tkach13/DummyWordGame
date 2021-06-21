@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Dummy word game</string>
+    <string name="game_history_item_player_type_you">You won</string>
+    <string name="game_history_item_player_type_bot">Dumb Bot</string>
+    <string name="main_enter_word_hint">Enter the word to start the game</string>
+    <string name="main_submit_text">Submit</string>
+    <string name="dialog_ok_btn_text">OK</string>
+    <string name="dialog_game_won_text">You won</string>
+    <string name="dialog_game_lost_text">You Lost</string>
+    <string name="dialog_game_lost_reason_two_words_text">You added two words instead of one</string>
+    <string name="dialog_game_lost_reason_no_words_added_text">You did not add a word \n and white space might not be best choice ;)</string>
+    <string name="dialog_game_lost_reason_repetition_text">You repeated already written word - %1$s</string>
+    <string name="dialog_game_lost_reason_incorrect_text">Instead of : %1$s should have been: %2$s</string>
+    <string name="bot_lost_expl_text">Bot is dumb B^^^ sometimes, but hey well done</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="player_type_text_size">20sp</dimen>
+    <dimen name="edit_text_text_size">18sp</dimen>
+    <dimen name="game_history_text_size">16sp</dimen>
+    <dimen name="button_text_size">@dimen/edit_text_text_size</dimen>
+    <dimen name="edit_text_padding">25dp</dimen>
+    <dimen name="common_corner_radius">20dp</dimen>
+    <dimen name="dialog_title_text_size">56sp</dimen>
+    <dimen name="dialog_secondary_text_size">24sp</dimen>
+</resources>
