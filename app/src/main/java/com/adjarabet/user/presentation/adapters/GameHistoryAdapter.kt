@@ -29,11 +29,11 @@ class GameHistoryAdapter() : RecyclerView.Adapter<BaseViewHolder>() {
                     }
 
                     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                        return currentList[oldItemPosition].currentWord == newList[newItemPosition].currentWord
+                        return currentList[oldItemPosition].playerType == newList[newItemPosition].playerType
                     }
 
                     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                        return false
+                        return currentList[oldItemPosition].currentWord == newList[newItemPosition].currentWord
                     }
 
                 },
@@ -74,7 +74,6 @@ class GameHistoryAdapter() : RecyclerView.Adapter<BaseViewHolder>() {
             viewBinding.tvInput.text = itemDataModel.currentWord
             viewBinding.ivPlayerType.setImageDrawable(ContextCompat.getDrawable(viewBinding.root.context, R.drawable.ic_robot))
         }
-
     }
 
     inner class GameHistoryUserViewHolder(private val viewBinding: LayoutGameHistoryUserItemBinding)

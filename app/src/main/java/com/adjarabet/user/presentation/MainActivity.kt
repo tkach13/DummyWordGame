@@ -20,6 +20,7 @@ import com.adjarabet.common.UserBotCommonLogicConstants.MSG_WORD_RECEIVED_KEY
 import com.adjarabet.common.UserBotCommonLogicConstants.MSG_WORD_RECEIVED_WHAT
 import com.adjarabet.common.UserBotCommonLogicConstants.MSG_WORD_SEND_WHAT
 import com.adjarabet.common.UserBotCommonLogicConstants.MSG_WORD_SENT_KEY
+import com.adjarabet.user.common.helpers.isPackageInstalled
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,11 +69,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val intent = Intent().apply {
-            component = ComponentName(BOT_SERVICE_PACKAGE, BOT_SERVICE_CLASS_PATH)
+        if (isPackageInstalled(BOT_SERVICE_PACKAGE,packageManager)){
+            val intent = Intent().apply {
+                component = ComponentName(BOT_SERVICE_PACKAGE, BOT_SERVICE_CLASS_PATH)
+            }
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        } else {
+            Toast.makeText(this,"Please install bot app",Toast.LENGTH_LONG).show()
         }
-        bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
